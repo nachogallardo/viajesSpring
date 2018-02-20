@@ -29,6 +29,10 @@
 			return;
 		}
 	}
+	function cambiar(event) {
+		document.getElementById("tipo").value = event.value;
+		alert(event.value);
+	}
 
 
 	
@@ -61,13 +65,6 @@
 
 <!-- Custom styles for this template -->
 <link href="<c:url value="/resources/css/style.css"/>" rel="stylesheet">
-
-<script type="text/javascript">
-function cambiar(event) {
-	document.getElementById("tipo").value = event.value;
-	alert(event.value);
-}
-</script>
 
 </head>
 <body>
