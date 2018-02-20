@@ -31,7 +31,6 @@
 	}
 	function cambiar(event) {
 		document.getElementById("tipo").value = event.value;
-		alert(event.value);
 	}
 
 
@@ -164,8 +163,9 @@
 				<%
 					}
 				%>
+				<c:url value="/editarOtroPerfil" var="editaOtro"></c:url>
 				<f:form role="form" commandName="usuario" method="POST"
-					action="../EditarOtroUsu" class="form-check">
+					action="${editaOtro }" class="form-check">
 					<f:input style="display: none;" type="number" path="idUsuario"
 						name="idUsuario" required="required" class="form-control"
 						placeholder="Nombre" />

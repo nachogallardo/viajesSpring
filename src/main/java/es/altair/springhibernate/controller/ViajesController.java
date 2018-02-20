@@ -104,7 +104,17 @@ public class ViajesController {
 		return new ModelAndView("editarOtroPerfil","usuario",usu);
 	}
 	
-	
+	@RequestMapping(value="/editarOtroPerfil",method= RequestMethod.POST)
+	public String editaOtroPerfil(@ModelAttribute Usuarios usuario,Model model) {
+		
+		usuariosDao.Editar(usuario.getIdUsuario(),usuario.getNombre(),usuario.getEmail(),usuario.getTelefono(),usuario.getDireccion(),usuario.getTipoUsuario());
+		if (!usuariosDao.validarUsuario(usuario)) {
+			
+		    return "redirect:/administrador";
+		}else {
+		  return "redirect:/administrador";
+		}
+	}
 	
 	
 	@RequestMapping(value="/borrarUsuario",method=RequestMethod.GET)
@@ -161,6 +171,8 @@ public class ViajesController {
 		return "redirect:/?fallo=Usuario y/o Password Incorrecto";
 				
 	}
+	
+	
 	@RequestMapping(value="/editaPerfil",method= RequestMethod.POST)
 	public String editaPerfil(@ModelAttribute Usuarios usu,Model model,HttpSession sesion) {
 		
