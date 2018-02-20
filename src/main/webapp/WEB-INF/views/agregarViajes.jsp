@@ -124,7 +124,7 @@
 					%>
 					<!--Body-->
 					<c:url value="/agregarNuevoV" var="agregar"></c:url>
-					<f:form role="form" commandName="viaje" enctype="multipart/form-data" method="POST" action="${agregar}" 
+					<f:form role="form" modelAttribute="viaje" enctype="multipart/form-data" method="POST" action="${agregar}" 
 						class="form-check">
 						<f:input style="display: none;" path="idViaje" type="number" name="idUsuario"  required="required"
 												class="form-control" 
@@ -165,8 +165,7 @@
 						<div class="input-group-addon bg-light">
 							<i class="fa fa-file-image-o text-primary"></i>
 						</div>
-						<input type="file"
-								class="form-control" id="portada" name="portada" required="required"/>
+						<input type="file" class="form-control" name="portada" id="portada"  required="required"/>
 					</div>
 				</div>
 				<button type="submit" id="btnRegistrar"

@@ -61,6 +61,14 @@
 
 <!-- Custom styles for this template -->
 <link href="<c:url value="/resources/css/style.css"/>" rel="stylesheet">
+
+<script type="text/javascript">
+function cambiar(event) {
+	document.getElementById("tipo").value = event.value;
+	alert(event.value);
+}
+</script>
+
 </head>
 <body>
 
@@ -187,9 +195,9 @@
 					<div class="form-group">
 						<div class="input-group mb-2 mb-sm-0">
 						
-							<input type="radio" name="tipode" id="administrador" value="1" /> Administrador
+							<input type="radio" name="tipode" id="administrador" value="1" onchange="cambiar(this)"/> Administrador
 							<br>
-							<input type="radio" name="tipode" id="usu" value="2" /> Usuario
+							<input type="radio" name="tipode" id="usu" value="2" onchange="cambiar(this)"/> Usuario
 							
 						</div>
 					</div>					

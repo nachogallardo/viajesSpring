@@ -61,13 +61,14 @@ public class ViajesController {
 	
 	
 	@RequestMapping(value="/agregarViaje",method=RequestMethod.GET)
-	public ModelAndView agregarViaje(Model model,HttpSession sesion) {	
-		return new ModelAndView("agregarViajes","viaje",new Viajes());
+	public String agregarOtroViaje(Model model,HttpSession sesion) {
+		model.addAttribute("viaje",new Viajes());
+		return"agregarViajes";
 	}
 	
 	
 	@RequestMapping(value="/agregarNuevoV", method=RequestMethod.POST)
-	public String agregarOtroViaje(@ModelAttribute Viajes viaje,@RequestParam("portada") MultipartFile portada) {
+	public String agregarNuevoV(@ModelAttribute Viajes viaje,@RequestParam("portada") MultipartFile portada) {
 		System.out.println("eee");
 		Blob blob;
 		try {
