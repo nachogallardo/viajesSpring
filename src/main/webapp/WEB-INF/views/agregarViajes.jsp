@@ -53,10 +53,10 @@
 						href="<c:url value="/editarAdmin"/>"><em class="fa fa-cog mr-1"></em>
 							Editar Perfil</a></li>
 					<li class="nav-item"><a class="nav-link active"
-						href="agregarViajes.jsp"><em class="fa fa-plane mr-1"></em>
+						href="<c:url value="/agregarViaje"/>"><em class="fa fa-plane mr-1"></em>
 							Agregar Viajes</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="borrarViajes.jsp"><em class="fa fa-plane mr-1"></em>
+						href="<c:url value="/borrarViaje"/>"><em class="fa fa-plane mr-1"></em>
 							Borrar Viajes</a></li>
 
 				</ul>
@@ -71,7 +71,7 @@
 				<div class="col-md-6 col-lg-8">
 					<h1 class="float-left text-center text-md-left">
 						Bienvenido
-						<%=((Usuarios) session.getAttribute("usuLogeado")).getNombre()%></h1>
+						${usuLogeado.nombre }</h1>
 				</div>
 
 				<div
@@ -82,7 +82,7 @@
 
 
 						<div class="username mt-1">
-							<h4 class="mb-1"><%=((Usuarios) session.getAttribute("usuLogeado")).getNombre()%></h4>
+							<h4 class="mb-1">${usuLogeado.nombre }</h4>
 
 							<h6 class="text-muted">Opciones</h6>
 						</div>
@@ -108,25 +108,21 @@
 					</div>
 				</div>
 				<div class="card-body p-3">
-					<%
-						String info = request.getParameter("info");
-							if (info != null) {
-					%>
+				<c:choose>
+					<c:when test="${info!='' }">
 					<div style="color: black;"
 						class="alert alert-warning alert-dismissable">
 						<button type="button" class="close" data-dismiss="alert"
 							aria-hidden="true">x</button>
 						<strong>Info!</strong>
-						<%=info%>
+						${info }
 					</div>
-					<%
-						}
-					%>
+					</c:when>
+					</c:choose>
 					<!--Body-->
 					<c:url value="/agregarNuevoV" var="agregar"></c:url>
-					<f:form role="form" modelAttribute="viaje" enctype="multipart/form-data" method="POST" action="${agregar}" 
-						class="form-check">
-						<f:input style="display: none;" path="idViaje" type="number" name="idUsuario"  required="required"
+					<f:form role="form" commandName="viaje" enctype="multipart/form-data" method="POST" action="${agregar}" class="form-check">
+						<f:input style="display: none;" path="idViaje" type="number" name="idViaje"  required="required"
 												class="form-control" 
 												placeholder="Nombre"/>
 						<div class="form-group">
@@ -165,7 +161,7 @@
 						<div class="input-group-addon bg-light">
 							<i class="fa fa-file-image-o text-primary"></i>
 						</div>
-						<input type="file" class="form-control" name="portada" id="portada"  required="required"/>
+						<input type="file" class="form-control" name="file" id="file"  required="required"/>
 					</div>
 				</div>
 				<button type="submit" id="btnRegistrar"

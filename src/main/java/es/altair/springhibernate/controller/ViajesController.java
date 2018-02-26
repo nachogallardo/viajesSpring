@@ -40,7 +40,9 @@ public class ViajesController {
 	private UsuariosDao usuariosDao;
 	
 	@RequestMapping(value="/",method=RequestMethod.GET)
-	public ModelAndView inicio(Model model) {
+	public ModelAndView inicio(@RequestParam(value="fallo",required=false,defaultValue="") String fallo,@RequestParam(value="mensaje",required=false,defaultValue="") String mensaje,Model model) {
+		model.addAttribute("mensaje",mensaje);
+		model.addAttribute("fallo",fallo);
 		model.addAttribute("listaViajes",viajesDao.listarTodosViajes());			
 		return new ModelAndView("index","usuario",new Usuarios());
 	}
@@ -48,12 +50,20 @@ public class ViajesController {
 	
 	@RequestMapping(value="/borrarViaje",method=RequestMethod.GET)
 	public String borrarViajes(Model model,HttpSession sesion) {
+		if(sesion.getAttribute("usuLogeado")==null) {
+			return "redirect:/";
+		}
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		model.addAttribute("listaViajes",viajesDao.listarTodosViajes());			
 		return "borrarViajes";
 	}
 	
 	@RequestMapping(value="/BorrarViaje",method=RequestMethod.GET)
-	public String BorrarViajes(Model model,HttpServletResponse response, HttpServletRequest request) {
+	public String BorrarViajes(Model model,HttpServletResponse response, HttpServletRequest request,HttpSession sesion) {
+		if(sesion.getAttribute("usuLogeado")==null) {
+			return "redirect:/";
+		}
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		int id=Integer.parseInt(request.getParameter("idViaje"));	
 		viajesDao.borrarViaje(id);
 		return "redirect:/borrarViaje";
@@ -61,18 +71,28 @@ public class ViajesController {
 	
 	
 	@RequestMapping(value="/agregarViaje",method=RequestMethod.GET)
-	public String agregarOtroViaje(Model model,HttpSession sesion) {
+	public String agregarOtroViaje(@RequestParam(value="info",required=false,defaultValue="") String info,Model model,HttpSession sesion) {
+		
+		if(sesion.getAttribute("usuLogeado")==null) {
+			return "redirect:/";
+		}
+		model.addAttribute("info",info);
+		
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		model.addAttribute("viaje",new Viajes());
 		return"agregarViajes";
 	}
 	
 	
 	@RequestMapping(value="/agregarNuevoV", method=RequestMethod.POST)
-	public String agregarNuevoV(@ModelAttribute Viajes viaje,@RequestParam("portada") MultipartFile portada) {
-		System.out.println("eee");
+	public String agregarNuevoV(@ModelAttribute Viajes v,Model model,@RequestParam("file") MultipartFile file,HttpSession sesion) {
+		if(sesion.getAttribute("usuLogeado")==null) {
+			return "redirect:/";
+		}
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		Blob blob;
 		try {
-			BufferedImage imageBuffer = ImageIO.read(portada.getInputStream());
+			BufferedImage imageBuffer = ImageIO.read(file.getInputStream());
 			Image tmp = imageBuffer.getScaledInstance(640, 640, BufferedImage.SCALE_FAST);
 			BufferedImage buffered = new BufferedImage(640, 640, BufferedImage.TYPE_INT_RGB);
 			buffered.getGraphics().drawImage(tmp, 0, 0, null);
@@ -81,7 +101,7 @@ public class ViajesController {
 			ImageIO.write(buffered, "jpg", os);
 
 			blob = viajesDao.obtenerBlobFromFile(os.toByteArray());
-			viaje.setPortada(blob);
+			v.setPortada(blob);
 		} catch (HibernateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -90,23 +110,30 @@ public class ViajesController {
 			e.printStackTrace();
 		}
 		
-		viajesDao.agregarViaje(viaje);
-
+		viajesDao.agregarViaje(v);
+		
 		return "redirect:/agregarViaje?info=Viaje agregado";
 	
 	}
 	
 	
 	@RequestMapping(value="/editarOtroUsuario",method=RequestMethod.GET)
-	public ModelAndView editarOtroUsuario(@RequestParam("idUsuario") String idUsuario, HttpServletResponse response, HttpServletRequest request,HttpSession sesion) {
+	public ModelAndView editarOtroUsuario(@RequestParam("idUsuario") String idUsuario,Model model, HttpServletResponse response, HttpServletRequest request,HttpSession sesion) {
+		if(sesion.getAttribute("usuLogeado")==null) {
+			return new ModelAndView("index","usuario",new Usuarios());
+		}
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		int id=Integer.parseInt(request.getParameter("idUsuario"));		
 		Usuarios usu=usuariosDao.usuarioPorId(id);
 		return new ModelAndView("editarOtroPerfil","usuario",usu);
 	}
 	
 	@RequestMapping(value="/editarOtroPerfil",method= RequestMethod.POST)
-	public String editaOtroPerfil(@ModelAttribute Usuarios usuario,Model model) {
-		
+	public String editaOtroPerfil(@ModelAttribute Usuarios usuario,Model model,HttpSession sesion) {
+		if(sesion.getAttribute("usuLogeado")==null) {
+			return "redirect:/";
+		}
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		usuariosDao.Editar(usuario.getIdUsuario(),usuario.getNombre(),usuario.getEmail(),usuario.getTelefono(),usuario.getDireccion(),usuario.getTipoUsuario());
 		if (!usuariosDao.validarUsuario(usuario)) {
 			
@@ -118,7 +145,11 @@ public class ViajesController {
 	
 	
 	@RequestMapping(value="/borrarUsuario",method=RequestMethod.GET)
-	public String borrarUsuario(@RequestParam("idUsuario") String idUsuario, HttpServletResponse response, HttpServletRequest request,HttpSession sesion) {
+	public String borrarUsuario(@RequestParam("idUsuario") String idUsuario, Model model,HttpServletResponse response, HttpServletRequest request,HttpSession sesion) {
+		if(sesion.getAttribute("usuLogeado")==null) {
+			return "redirect:/";
+		}
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		int id=Integer.parseInt(request.getParameter("idUsuario"));		
 		
 		usuariosDao.borrarUsuario(id);
@@ -126,7 +157,11 @@ public class ViajesController {
 	}
 	
 	@RequestMapping(value="/cancelarViaje",method=RequestMethod.GET)
-	public String cancelarViaje(@RequestParam("idViaje") String idViaje, HttpServletResponse response, HttpServletRequest request,HttpSession sesion) {
+	public String cancelarViaje(@RequestParam("idViaje") String idViaje,Model model, HttpServletResponse response, HttpServletRequest request,HttpSession sesion) {
+		if(sesion.getAttribute("usuLogeado")==null) {
+			return "redirect:/";
+		}
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		int id=Integer.parseInt(request.getParameter("idViaje"));		
 		int idUsuario=((Usuarios)sesion.getAttribute("usuLogeado")).getIdUsuario();
 		viajesDao.cancelarViaje(id,idUsuario);
@@ -134,7 +169,11 @@ public class ViajesController {
 	}
 
 	@RequestMapping(value="/comprarViaje",method=RequestMethod.GET)
-	public String compraViaje(@RequestParam("idViaje") String idViaje, HttpServletResponse response, HttpServletRequest request,HttpSession sesion) {
+	public String compraViaje(@RequestParam("idViaje") String idViaje,Model model, HttpServletResponse response, HttpServletRequest request,HttpSession sesion) {
+		if(sesion.getAttribute("usuLogeado")==null) {
+			return "redirect:/";
+		}
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		int id=Integer.parseInt(request.getParameter("idViaje"));		
 		int idUsuario=((Usuarios)sesion.getAttribute("usuLogeado")).getIdUsuario();
 		
@@ -175,10 +214,13 @@ public class ViajesController {
 	
 	@RequestMapping(value="/editaPerfil",method= RequestMethod.POST)
 	public String editaPerfil(@ModelAttribute Usuarios usu,Model model,HttpSession sesion) {
-		
+		if(sesion.getAttribute("usuLogeado")==null) {
+			return "redirect:/";
+		}
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		usuariosDao.Editar(usu.getIdUsuario(),usu.getNombre(),usu.getEmail(),usu.getTelefono(),usu.getDireccion(),2);
 		sesion.setAttribute("usuLogeado", usu);
-		if (!usuariosDao.validarUsuario(usu)) {
+		if (usuariosDao.validarUsuario(usu)) {
 			
 		    return "redirect:/editar?info=Usuario Editado";
 		}else {
@@ -187,21 +229,35 @@ public class ViajesController {
 	}
 	
 	@RequestMapping(value="/editar",method= RequestMethod.GET)
-	public ModelAndView editar(Model model,HttpSession sesion) {
+	public ModelAndView editar(@RequestParam(value="info",required=false,defaultValue="") String info,Model model,HttpSession sesion) {
+		if(sesion.getAttribute("usuLogeado")==null) {
+			return new ModelAndView("index","usuario",new Usuarios());
+		}
+		model.addAttribute("info",info);
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		return new ModelAndView("editarPerfil","usuario",sesion.getAttribute("usuLogeado"));
 	}
 	
 	
 	@RequestMapping(value="/editarAdmin",method= RequestMethod.GET)
-	public ModelAndView editarAdmin(Model model,HttpSession sesion) {
+	public ModelAndView editarAdmin(@RequestParam(value="info",required=false,defaultValue="") String info,Model model,HttpSession sesion) {
+		if(sesion.getAttribute("usuLogeado")==null) {
+			return new ModelAndView("index","usuario",new Usuarios());
+		}
+		model.addAttribute("info",info);
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		return new ModelAndView("editarPerfilAdmin","usuario",sesion.getAttribute("usuLogeado"));
 	}
 	
 	@RequestMapping(value="/editaPerfilAdministrador",method= RequestMethod.POST)
 	public String editarPerfilAdmin(@ModelAttribute Usuarios usu,Model model,HttpSession sesion) {
+		if(sesion.getAttribute("usuLogeado")==null) {
+			return "redirect:/";
+		}
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		usuariosDao.Editar(usu.getIdUsuario(),usu.getNombre(),usu.getEmail(),usu.getTelefono(),usu.getDireccion(),1);
 		sesion.setAttribute("usuLogeado", usu);
-		if (!usuariosDao.validarUsuario(usu)) {
+		if (usuariosDao.validarUsuario(usu)) {
 			
 		    return "redirect:/editarAdmin?info=Usuario Editado";
 		}else {
@@ -218,11 +274,13 @@ public class ViajesController {
 	
 	
 	@RequestMapping(value="/usuario", method=RequestMethod.GET)
-	public String usuarioNormal(Model model,HttpSession sesion) {
+	public String usuarioNormal(@RequestParam(value="infoCompra",required=false,defaultValue="") String infoCompra,Model model,HttpSession sesion) {
 		if(sesion.getAttribute("usuLogeado")==null) {
 			return "redirect:/";
 		}
-		model.addAttribute("listaViajes",viajesDao.listarTodosViajes());	
+		model.addAttribute("infoCompra",infoCompra);
+		model.addAttribute("listaViajes",viajesDao.listarTodosViajes());
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		return "usuario";
 	}
 	@RequestMapping(value="/administrador", method=RequestMethod.GET)
@@ -230,6 +288,7 @@ public class ViajesController {
 		if(sesion.getAttribute("usuLogeado")==null) {
 			return "redirect:/";
 		}
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		model.addAttribute("listaUsuarios",usuariosDao.listarUsuarios());	
 		return "administrador";
 	}
@@ -239,6 +298,7 @@ public class ViajesController {
 		if(sesion.getAttribute("usuLogeado")==null) {
 			return "redirect:/";
 		}
+		model.addAttribute("usuLogeado",sesion.getAttribute("usuLogeado"));
 		model.addAttribute("listaViajesId",viajesDao.listarViajesUsuario(((Usuarios)sesion.getAttribute("usuLogeado")).getIdUsuario()));	
 		return "gestionarViajes";
 	}

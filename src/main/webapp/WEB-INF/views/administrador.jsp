@@ -77,7 +77,7 @@
 				<div class="col-md-6 col-lg-8">
 					<h1 class="float-left text-center text-md-left">
 						Bienvenido
-						<%=((Usuarios) session.getAttribute("usuLogeado")).getNombre()%></h1>
+						${usuLogeado.nombre }</h1>
 				</div>
 
 				<div
@@ -88,7 +88,7 @@
 
 
 						<div class="username mt-1">
-							<h4 class="mb-1"><%=((Usuarios) session.getAttribute("usuLogeado")).getNombre()%></h4>
+							<h4 class="mb-1">${usuLogeado.nombre }</h4>
 
 							<h6 class="text-muted">Opciones</h6>
 						</div>

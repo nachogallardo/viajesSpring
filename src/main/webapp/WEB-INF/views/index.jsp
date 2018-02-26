@@ -99,20 +99,17 @@
 						<button type="submit" class="btn btn-md btn-info col-12">
 							<i class="fa fa-sign-in"></i> Iniciar Sesion
 						</button>
-						<%
-							String fallo = request.getParameter("fallo");
-							if (fallo != null) {
-						%>
+						<c:choose>
+						<c:when test="${fallo!='' }">
 						<div style="color: black;"
 							class="alert alert-warning alert-dismissable form-control">
 							<button type="button" class="close" data-dismiss="alert"
 								aria-hidden="true">x</button>
 							<strong>Info!</strong>
-							<%=fallo%>
+							${fallo }
 						</div>
-						<%
-							}
-						%>
+						</c:when>
+						</c:choose>
 					</div>
 				</f:form>
 
@@ -168,20 +165,17 @@
 								</div>
 							</div>
 							<div class="card-body p-3">
-								<%
-									String error = request.getParameter("mensaje");
-									if (error != null) {
-								%>
+								<c:choose>
+								<c:when test="${mensaje!='' }">
 								<div style="color: black;"
 									class="alert alert-warning alert-dismissable">
 									<button type="button" class="close" data-dismiss="alert"
 										aria-hidden="true">x</button>
 									<strong>Info!</strong>
-									<%=error%>
+									${mensaje }
 								</div>
-								<%
-									}
-								%>
+								</c:when>
+								</c:choose>
 								
 								<c:url value="/addUsuario" var="addUsu"></c:url>
 								<f:form role="form" method="POST" action="${addUsu }" commandName="usuario"
@@ -214,7 +208,7 @@
 											
 												<f:input type="password" path="contrasenia" id="clave" required="required"
 												 class="form-control"							
-												placeholder="repite contraseña"/>
+												placeholder="contraseña"/>
 										</div>
 									</div>
 									<div class="form-group">

@@ -131,7 +131,7 @@
 				class="col-xs-12 col-sm-8 offset-sm-4 col-lg-9 offset-lg-3 col-xl-10 offset-xl-2 pt-3 pl-4">
 			<header class="page-header row justify-center">
 				<div class="col-md-6 col-lg-8">
-					<h1 class="float-left text-center text-md-left">Bienvenido <%=((Usuarios) session.getAttribute("usuLogeado")).getNombre()%></h1>
+					<h1 class="float-left text-center text-md-left">Bienvenido ${usuLogeado.nombre }</h1>
 				</div>
 
 				<div
@@ -142,7 +142,7 @@
 
 
 						<div class="username mt-1">
-							<h4 class="mb-1"><%=((Usuarios) session.getAttribute("usuLogeado")).getNombre()%></h4>
+							<h4 class="mb-1">${usuLogeado.nombre }</h4>
 
 							<h6 class="text-muted">Opciones</h6>
 						</div>
@@ -165,20 +165,17 @@
 
 				<div class="clear"></div>
 			</header>
-						<%
-							String infoCompra = request.getParameter("infoCompra");
-							if (infoCompra != null) {
-						%>
+						<c:choose>
+						<c:when test="${infoCompra!='' }">
 						<div style="color: black;"
 							class="alert alert-warning alert-dismissable form-control">
 							<button type="button" class="close" data-dismiss="alert"
 								aria-hidden="true">x</button>
 							<strong>Info!</strong>
-							<%=infoCompra%>
+							${infoCompra}
 						</div>
-						<%
-							}
-						%>
+						</c:when>
+						</c:choose>
 			<div class="row">
 			<c:forEach items="${listaViajes}" var="v">
 
@@ -203,14 +200,6 @@
 			</div>
 		</div>
 	</div>
-
-
-
-
-
-
-
-
 
 	<!-- Bootstrap core JavaScript
     ================================================== -->

@@ -119,15 +119,15 @@
 						href="<c:url value="/editarAdmin"/>"><em class="fa fa-cog mr-1"></em>
 							Editar Perfil</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="agregarViajes.jsp"><em class="fa fa-plane mr-1"></em>
+						href="<c:url value="/agregarViaje"/>"><em class="fa fa-plane mr-1"></em>
 							Agregar Viajes</a></li>
 					<li class="nav-item"><a class="nav-link active"
-						href="<c:url value="/logout"/>"><em class="fa fa-plane mr-1"></em>
+						href="<c:url value="/borrarViaje"/>"><em class="fa fa-plane mr-1"></em>
 							Borrar Viajes</a></li>
 
 				</ul>
 
-				<a href="../CerrarSesion" class="logout-button"><em
+				<a href="<c:url value="/logout"/>" class="logout-button"><em
 					class="fa fa-power-off"></em> Cerrar Sesion</a>
 			</nav>
 
@@ -137,7 +137,7 @@
 				<div class="col-md-6 col-lg-8">
 					<h1 class="float-left text-center text-md-left">
 						Bienvenido
-						<%=((Usuarios) session.getAttribute("usuLogeado")).getNombre()%></h1>
+						${usuLogeado.nombre }</h1>
 				</div>
 
 				<div
@@ -148,7 +148,7 @@
 
 
 						<div class="username mt-1">
-							<h4 class="mb-1"><%=((Usuarios) session.getAttribute("usuLogeado")).getNombre()%></h4>
+							<h4 class="mb-1">${usuLogeado.nombre }</h4>
 
 							<h6 class="text-muted">Opciones</h6>
 						</div>

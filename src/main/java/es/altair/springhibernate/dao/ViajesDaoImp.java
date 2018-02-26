@@ -128,6 +128,7 @@ public class ViajesDaoImp implements ViajesDao{
 				
 	}
 	@Override
+	@Transactional
 	public void agregarViaje(Viajes viaje) {
 		Session sesion=sessionFactory.getCurrentSession();
 		sesion.persist(viaje);
